@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Picker</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Restaurant Picker</h1>
+        <p class="subtitle">Pick a letter, choose a country, find restaurants!</p>
+
+        <!-- Step 1: Letter Selection -->
+        <section id="letter-section" class="section">
+            <h2>1. Pick a Letter</h2>
+            <div class="letter-controls">
+                <button id="random-btn" class="btn btn-primary">Random Letter</button>
+                <span>or</span>
+                <input type="text" id="letter-input" maxlength="1" placeholder="A-Z" class="letter-input">
+            </div>
+            <div id="selected-letter" class="selected-letter hidden"></div>
+        </section>
+
+        <!-- Step 2: Country Selection -->
+        <section id="country-section" class="section hidden">
+            <h2>2. Choose a Country</h2>
+            <select id="country-select" class="select">
+                <option value="">Select a country...</option>
+            </select>
+            <p id="no-countries" class="error hidden">No countries found for this letter. Try another!</p>
+        </section>
+
+        <!-- Step 3: Location & Radius -->
+        <section id="location-section" class="section hidden">
+            <h2>3. Set Your Location</h2>
+            <div class="form-group">
+                <label for="address">Location:</label>
+                <input type="text" id="address" placeholder="e.g., London, UK" class="input">
+            </div>
+            <div class="form-group">
+                <label for="radius">Radius: <span id="radius-value">5</span> km</label>
+                <input type="range" id="radius" min="1" max="25" value="5" class="slider">
+            </div>
+            <button id="search-btn" class="btn btn-primary">Find Restaurants</button>
+        </section>
+
+        <!-- Results -->
+        <section id="results-section" class="section hidden">
+            <h2>Results</h2>
+            <div id="loading" class="loading hidden">Searching...</div>
+            <div id="results-list"></div>
+            <div id="no-results" class="no-results hidden">
+                <p>No restaurants found. Try:</p>
+                <button id="expand-radius-btn" class="btn">Expand Radius (+5 km)</button>
+                <button id="change-country-btn" class="btn">Try Different Country</button>
+            </div>
+        </section>
+
+        <!-- Error Display -->
+        <div id="error-message" class="error hidden"></div>
+
+        <!-- Credits -->
+        <footer class="credits">
+            Made in less than 30 minutes by
+            <a href="https://github.com/fedenanni" target="_blank">fedenanni</a> and
+            <a href="https://claude.ai" target="_blank">Claude</a>,
+            starting from an idea by
+            <a href="https://github.com/rwood-97" target="_blank">rwood-97</a>
+        </footer>
+    </div>
+
+    <script>
+        // State
+        let currentLetter = '';
+        let currentCountry = null;
+        let currentRadius = 5;
+
+        // DOM Elements
+        const randomBtn = document.getElementById('random-btn');
+        const letterInput = document.getElementById('letter-input');
+        const selectedLetter = document.getElementById('selected-letter');
+        const countrySection = document.getElementById('country-section');
+        const countrySelect = document.getElementById('country-select');
+        const noCountries = document.getElementById('no-countries');
+        const locationSection = document.getElementById('location-section');
+        const addressInput = document.getElementById('address');
+        const radiusSlider = document.getElementById('radius');
+        const radiusValue = document.getElementById('radius-value');
+        const searchBtn = document.getElementById('search-btn');
+        const resultsSection = document.getElementById('results-section');
+        const loading = document.getElementById('loading');
+        const resultsList = document.getElementById('results-list');
+        const noResults = document.getElementById('no-results');
+        const expandRadiusBtn = document.getElementById('expand-radius-btn');
+        const changeCountryBtn = document.getElementById('change-country-btn');
+        const errorMessage = document.getElementById('error-message');
+
+        // Event Listeners
+        randomBtn.addEventListener('click', async () => {
+            const response = await fetch('/api/random-letter');
+            const data = await response.json();
+            setLetter(data.letter);
+        });
+
+        letterInput.addEventListener('input', (e) => {
+            const letter = e.target.value.toUpperCase();
+            if (/^[A-Z]$/.test(letter)) {
+                setLetter(letter);
+            }
+        });
+
+        countrySelect.addEventListener('change', (e) => {
+            const selected = countrySelect.options[countrySelect.selectedIndex];
+            if (selected.value) {
+                currentCountry = {
+                    country: selected.value,
+                    cuisine: selected.dataset.cuisine
+                };
+                locationSection.classList.remove('hidden');
+                resultsSection.classList.add('hidden');
+            }
+        });
+
+        radiusSlider.addEventListener('input', (e) => {
+            currentRadius = parseInt(e.target.value);
+            radiusValue.textContent = currentRadius;
+        });
+
+        searchBtn.addEventListener('click', searchRestaurants);
+
+        expandRadiusBtn.addEventListener('click', () => {
+            currentRadius = Math.min(currentRadius + 5, 25);
+            radiusSlider.value = currentRadius;
+            radiusValue.textContent = currentRadius;
+            searchRestaurants();
+        });
+
+        changeCountryBtn.addEventListener('click', () => {
+            countrySelect.selectedIndex = 0;
+            currentCountry = null;
+            locationSection.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+            countrySection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Functions
+        async function setLetter(letter) {
+            currentLetter = letter;
+            letterInput.value = letter;
+            selectedLetter.textContent = letter;
+            selectedLetter.classList.remove('hidden');
+
+            // Reset downstream sections
+            countrySection.classList.add('hidden');
+            locationSection.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+            currentCountry = null;
+
+            // Fetch countries
+            const response = await fetch(`/api/countries/${letter}`);
+            const data = await response.json();
+
+            // Populate country dropdown
+            countrySelect.innerHTML = '<option value="">Select a country...</option>';
+
+            if (data.countries.length === 0) {
+                noCountries.classList.remove('hidden');
+                countrySection.classList.remove('hidden');
+                return;
+            }
+
+            noCountries.classList.add('hidden');
+            data.countries.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.country;
+                option.textContent = c.country;
+                option.dataset.cuisine = c.cuisine;
+                countrySelect.appendChild(option);
+            });
+
+            countrySection.classList.remove('hidden');
+        }
+
+        async function searchRestaurants() {
+            if (!currentCountry || !addressInput.value) {
+                showError('Please select a country and enter a location.');
+                return;
+            }
+
+            hideError();
+            loading.classList.remove('hidden');
+            resultsList.innerHTML = '';
+            noResults.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cuisine: currentCountry.cuisine,
+                        address: addressInput.value,
+                        radius_km: currentRadius
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Search failed');
+                }
+
+                loading.classList.add('hidden');
+
+                if (data.restaurants.length === 0) {
+                    noResults.classList.remove('hidden');
+                    return;
+                }
+
+                displayResults(data.restaurants);
+            } catch (err) {
+                loading.classList.add('hidden');
+                showError(err.message);
+            }
+        }
+
+        function displayResults(restaurants) {
+            resultsList.innerHTML = restaurants.map(r => `
+                <div class="restaurant-card">
+                    <h3>${escapeHtml(r.name)}</h3>
+                    <p class="address">${escapeHtml(r.address)}</p>
+                    ${r.rating ? `<p class="rating">Rating: ${r.rating}/5</p>` : ''}
+                    <a href="${r.maps_url}" target="_blank" class="btn btn-small">View on Google Maps</a>
+                </div>
+            `).join('');
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+{
+  "A": [
+    {"country": "Afghanistan", "cuisine": "Afghan restaurant"},
+    {"country": "Argentina", "cuisine": "Argentinian restaurant"},
+    {"country": "Armenia", "cuisine": "Armenian restaurant"},
+    {"country": "Australia", "cuisine": "Australian restaurant"},
+    {"country": "Austria", "cuisine": "Austrian restaurant"}
+  ],
+  "B": [
+    {"country": "Bangladesh", "cuisine": "Bangladeshi restaurant"},
+    {"country": "Belgium", "cuisine": "Belgian restaurant"},
+    {"country": "Bolivia", "cuisine": "Bolivian restaurant"},
+    {"country": "Brazil", "cuisine": "Brazilian restaurant"},
+    {"country": "Bulgaria", "cuisine": "Bulgarian restaurant"}
+  ],
+  "C": [
+    {"country": "Cambodia", "cuisine": "Cambodian restaurant"},
+    {"country": "Canada", "cuisine": "Canadian restaurant"},
+    {"country": "Chile", "cuisine": "Chilean restaurant"},
+    {"country": "China", "cuisine": "Chinese restaurant"},
+    {"country": "Colombia", "cuisine": "Colombian restaurant"},
+    {"country": "Cuba", "cuisine": "Cuban restaurant"}
+  ],
+  "D": [
+    {"country": "Denmark", "cuisine": "Danish restaurant"},
+    {"country": "Dominican Republic", "cuisine": "Dominican restaurant"}
+  ],
+  "E": [
+    {"country": "Ecuador", "cuisine": "Ecuadorian restaurant"},
+    {"country": "Egypt", "cuisine": "Egyptian restaurant"},
+    {"country": "El Salvador", "cuisine": "Salvadoran restaurant"},
+    {"country": "Ethiopia", "cuisine": "Ethiopian restaurant"}
+  ],
+  "F": [
+    {"country": "Finland", "cuisine": "Finnish restaurant"},
+    {"country": "France", "cuisine": "French restaurant"}
+  ],
+  "G": [
+    {"country": "Georgia", "cuisine": "Georgian restaurant"},
+    {"country": "Germany", "cuisine": "German restaurant"},
+    {"country": "Ghana", "cuisine": "Ghanaian restaurant"},
+    {"country": "Greece", "cuisine": "Greek restaurant"},
+    {"country": "Guatemala", "cuisine": "Guatemalan restaurant"}
+  ],
+  "H": [
+    {"country": "Haiti", "cuisine": "Haitian restaurant"},
+    {"country": "Honduras", "cuisine": "Honduran restaurant"},
+    {"country": "Hungary", "cuisine": "Hungarian restaurant"}
+  ],
+  "I": [
+    {"country": "India", "cuisine": "Indian restaurant"},
+    {"country": "Indonesia", "cuisine": "Indonesian restaurant"},
+    {"country": "Iran", "cuisine": "Persian restaurant"},
+    {"country": "Iraq", "cuisine": "Iraqi restaurant"},
+    {"country": "Ireland", "cuisine": "Irish restaurant"},
+    {"country": "Israel", "cuisine": "Israeli restaurant"},
+    {"country": "Italy", "cuisine": "Italian restaurant"}
+  ],
+  "J": [
+    {"country": "Jamaica", "cuisine": "Jamaican restaurant"},
+    {"country": "Japan", "cuisine": "Japanese restaurant"},
+    {"country": "Jordan", "cuisine": "Jordanian restaurant"}
+  ],
+  "K": [
+    {"country": "Kazakhstan", "cuisine": "Kazakh restaurant"},
+    {"country": "Kenya", "cuisine": "Kenyan restaurant"},
+    {"country": "South Korea", "cuisine": "Korean restaurant"},
+    {"country": "Kuwait", "cuisine": "Kuwaiti restaurant"}
+  ],
+  "L": [
+    {"country": "Laos", "cuisine": "Laotian restaurant"},
+    {"country": "Latvia", "cuisine": "Latvian restaurant"},
+    {"country": "Lebanon", "cuisine": "Lebanese restaurant"},
+    {"country": "Libya", "cuisine": "Libyan restaurant"},
+    {"country": "Lithuania", "cuisine": "Lithuanian restaurant"}
+  ],
+  "M": [
+    {"country": "Malaysia", "cuisine": "Malaysian restaurant"},
+    {"country": "Mexico", "cuisine": "Mexican restaurant"},
+    {"country": "Mongolia", "cuisine": "Mongolian restaurant"},
+    {"country": "Morocco", "cuisine": "Moroccan restaurant"},
+    {"country": "Myanmar", "cuisine": "Burmese restaurant"}
+  ],
+  "N": [
+    {"country": "Nepal", "cuisine": "Nepalese restaurant"},
+    {"country": "Netherlands", "cuisine": "Dutch restaurant"},
+    {"country": "New Zealand", "cuisine": "New Zealand restaurant"},
+    {"country": "Nicaragua", "cuisine": "Nicaraguan restaurant"},
+    {"country": "Nigeria", "cuisine": "Nigerian restaurant"},
+    {"country": "Norway", "cuisine": "Norwegian restaurant"}
+  ],
+  "O": [
+    {"country": "Oman", "cuisine": "Omani restaurant"}
+  ],
+  "P": [
+    {"country": "Pakistan", "cuisine": "Pakistani restaurant"},
+    {"country": "Panama", "cuisine": "Panamanian restaurant"},
+    {"country": "Paraguay", "cuisine": "Paraguayan restaurant"},
+    {"country": "Peru", "cuisine": "Peruvian restaurant"},
+    {"country": "Philippines", "cuisine": "Filipino restaurant"},
+    {"country": "Poland", "cuisine": "Polish restaurant"},
+    {"country": "Portugal", "cuisine": "Portuguese restaurant"},
+    {"country": "Puerto Rico", "cuisine": "Puerto Rican restaurant"}
+  ],
+  "Q": [
+    {"country": "Qatar", "cuisine": "Qatari restaurant"}
+  ],
+  "R": [
+    {"country": "Romania", "cuisine": "Romanian restaurant"},
+    {"country": "Russia", "cuisine": "Russian restaurant"}
+  ],
+  "S": [
+    {"country": "Saudi Arabia", "cuisine": "Saudi restaurant"},
+    {"country": "Scotland", "cuisine": "Scottish restaurant"},
+    {"country": "Senegal", "cuisine": "Senegalese restaurant"},
+    {"country": "Serbia", "cuisine": "Serbian restaurant"},
+    {"country": "Singapore", "cuisine": "Singaporean restaurant"},
+    {"country": "Somalia", "cuisine": "Somali restaurant"},
+    {"country": "South Africa", "cuisine": "South African restaurant"},
+    {"country": "Spain", "cuisine": "Spanish restaurant"},
+    {"country": "Sri Lanka", "cuisine": "Sri Lankan restaurant"},
+    {"country": "Sudan", "cuisine": "Sudanese restaurant"},
+    {"country": "Sweden", "cuisine": "Swedish restaurant"},
+    {"country": "Switzerland", "cuisine": "Swiss restaurant"},
+    {"country": "Syria", "cuisine": "Syrian restaurant"}
+  ],
+  "T": [
+    {"country": "Taiwan", "cuisine": "Taiwanese restaurant"},
+    {"country": "Tanzania", "cuisine": "Tanzanian restaurant"},
+    {"country": "Thailand", "cuisine": "Thai restaurant"},
+    {"country": "Trinidad and Tobago", "cuisine": "Trinidadian restaurant"},
+    {"country": "Tunisia", "cuisine": "Tunisian restaurant"},
+    {"country": "Turkey", "cuisine": "Turkish restaurant"}
+  ],
+  "U": [
+    {"country": "Uganda", "cuisine": "Ugandan restaurant"},
+    {"country": "Ukraine", "cuisine": "Ukrainian restaurant"},
+    {"country": "United Arab Emirates", "cuisine": "Emirati restaurant"},
+    {"country": "United Kingdom", "cuisine": "British restaurant"},
+    {"country": "United States", "cuisine": "American restaurant"},
+    {"country": "Uruguay", "cuisine": "Uruguayan restaurant"},
+    {"country": "Uzbekistan", "cuisine": "Uzbek restaurant"}
+  ],
+  "V": [
+    {"country": "Venezuela", "cuisine": "Venezuelan restaurant"},
+    {"country": "Vietnam", "cuisine": "Vietnamese restaurant"}
+  ],
+  "W": [
+    {"country": "Wales", "cuisine": "Welsh restaurant"}
+  ],
+  "X": [],
+  "Y": [
+    {"country": "Yemen", "cuisine": "Yemeni restaurant"}
+  ],
+  "Z": [
+    {"country": "Zimbabwe", "cuisine": "Zimbabwean restaurant"}
+  ]
+}
