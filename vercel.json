@@ -1,10 +1,9 @@
 {
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "../main.py,../templates/**,../data/**"
-    }
-  },
   "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    },
     {
       "src": "static/**",
       "use": "@vercel/static"
