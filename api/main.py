@@ -121,7 +121,7 @@ async def search_restaurants(
     }
     body = {
         "textQuery": cuisine,
-        "locationBias": {
+        "locationRestriction": {
             "circle": {
                 "center": {"latitude": lat, "longitude": lng},
                 "radius": radius_meters,
