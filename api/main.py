@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import httpx
@@ -37,6 +38,8 @@ class Restaurant(BaseModel):
     name: str
     address: str
     rating: float | None = None
+    recent_rating: float | None = None
+    recent_review_count: int = 0
     maps_url: str
 
 
@@ -79,6 +82,31 @@ async def geocode_address(address: str) -> tuple[float, float] | None:
     return None
 
 
+def calculate_recent_rating(reviews: list[dict]) -> tuple[float | None, int]:
+    """Calculate average rating from reviews in the last 3 months."""
+    if not reviews:
+        return None, 0
+
+    three_months_ago = datetime.now() - timedelta(days=90)
+    recent_ratings = []
+
+    for review in reviews:
+        publish_time = review.get("publishTime")
+        if publish_time:
+            try:
+                review_date = datetime.fromisoformat(publish_time.replace("Z", "+00:00"))
+                if review_date.replace(tzinfo=None) >= three_months_ago:
+                    if "rating" in review:
+                        recent_ratings.append(review["rating"])
+            except (ValueError, TypeError):
+                continue
+
+    if not recent_ratings:
+        return None, 0
+
+    return round(sum(recent_ratings) / len(recent_ratings), 1), len(recent_ratings)
+
+
 async def search_restaurants(
     cuisine: str, lat: float, lng: float, radius_meters: float
 ) -> list[Restaurant]:
@@ -89,7 +117,7 @@ async def search_restaurants(
     url = "https://places.googleapis.com/v1/places:searchText"
     headers = {
         "X-Goog-Api-Key": GOOGLE_API_KEY,
-        "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.googleMapsUri",
+        "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.googleMapsUri,places.reviews",
     }
     body = {
         "textQuery": cuisine,
@@ -111,11 +139,15 @@ async def search_restaurants(
 
     restaurants = []
     for place in data.get("places", []):
+        reviews = place.get("reviews", [])
+        recent_rating, recent_count = calculate_recent_rating(reviews)
         restaurants.append(
             Restaurant(
                 name=place.get("displayName", {}).get("text", "Unknown"),
                 address=place.get("formattedAddress", ""),
                 rating=place.get("rating"),
+                recent_rating=recent_rating,
+                recent_review_count=recent_count,
                 maps_url=place.get("googleMapsUri", ""),
             )
         )

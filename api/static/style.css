@@ -109,6 +109,22 @@ h2 {
     font-size: 0.9rem;
 }
 
+.btn-toggle {
+    background: #e8e8e8;
+    border: 2px solid #ddd;
+}
+
+.btn-toggle.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.results-controls {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
 .select, .input {
     width: 100%;
     padding: 0.75rem;
@@ -186,7 +202,23 @@ h2 {
 .restaurant-card .rating {
     color: #f5a623;
     font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.restaurant-card .rating.recent {
+    color: #667eea;
+}
+
+.restaurant-card .rating.overall {
+    font-weight: normal;
+    font-size: 0.85rem;
+    color: #888;
     margin-bottom: 0.75rem;
+}
+
+.restaurant-card .review-count {
+    font-weight: normal;
+    font-size: 0.85rem;
 }
 
 .no-results {

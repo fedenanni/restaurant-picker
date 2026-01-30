@@ -48,6 +48,9 @@
         <!-- Results -->
         <section id="results-section" class="section hidden">
             <h2>Results</h2>
+            <div class="results-controls">
+                <button id="recent-rating-btn" class="btn btn-small btn-toggle">Rank by Recent Reviews (3 months)</button>
+            </div>
             <div id="loading" class="loading hidden">Searching...</div>
             <div id="results-list"></div>
             <div id="no-results" class="no-results hidden">
@@ -75,6 +78,8 @@
         let currentLetter = '';
         let currentCountry = null;
         let currentRadius = 5;
+        let currentRestaurants = [];
+        let showRecentRating = false;
 
         // DOM Elements
         const randomBtn = document.getElementById('random-btn');
@@ -95,6 +100,7 @@
         const expandRadiusBtn = document.getElementById('expand-radius-btn');
         const changeCountryBtn = document.getElementById('change-country-btn');
         const errorMessage = document.getElementById('error-message');
+        const recentRatingBtn = document.getElementById('recent-rating-btn');
 
         // Event Listeners
         randomBtn.addEventListener('click', async () => {
@@ -142,6 +148,15 @@
             locationSection.classList.add('hidden');
             resultsSection.classList.add('hidden');
             countrySection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        recentRatingBtn.addEventListener('click', () => {
+            showRecentRating = !showRecentRating;
+            recentRatingBtn.classList.toggle('active', showRecentRating);
+            recentRatingBtn.textContent = showRecentRating
+                ? 'Show Default Ranking'
+                : 'Rank by Recent Reviews (3 months)';
+            displayResults(currentRestaurants);
         });
 
         // Functions
@@ -218,7 +233,11 @@
                     return;
                 }
 
-                displayResults(data.restaurants);
+                currentRestaurants = data.restaurants;
+                showRecentRating = false;
+                recentRatingBtn.classList.remove('active');
+                recentRatingBtn.textContent = 'Rank by Recent Reviews (3 months)';
+                displayResults(currentRestaurants);
             } catch (err) {
                 loading.classList.add('hidden');
                 showError(err.message);
@@ -226,14 +245,40 @@
         }
 
         function displayResults(restaurants) {
-            resultsList.innerHTML = restaurants.map(r => `
-                <div class="restaurant-card">
-                    <h3>${escapeHtml(r.name)}</h3>
-                    <p class="address">${escapeHtml(r.address)}</p>
-                    ${r.rating ? `<p class="rating">Rating: ${r.rating}/5</p>` : ''}
-                    <a href="${r.maps_url}" target="_blank" class="btn btn-small">View on Google Maps</a>
-                </div>
-            `).join('');
+            let sorted = [...restaurants];
+            if (showRecentRating) {
+                sorted.sort((a, b) => {
+                    // Restaurants with recent reviews come first, sorted by recent rating
+                    if (a.recent_rating !== null && b.recent_rating !== null) {
+                        return b.recent_rating - a.recent_rating;
+                    }
+                    if (a.recent_rating !== null) return -1;
+                    if (b.recent_rating !== null) return 1;
+                    // Fall back to overall rating
+                    return (b.rating || 0) - (a.rating || 0);
+                });
+            }
+
+            resultsList.innerHTML = sorted.map(r => {
+                let ratingHtml = '';
+                if (showRecentRating && r.recent_rating !== null) {
+                    ratingHtml = `<p class="rating recent">Recent Rating: ${r.recent_rating}/5 <span class="review-count">(${r.recent_review_count} review${r.recent_review_count !== 1 ? 's' : ''})</span></p>`;
+                    if (r.rating) {
+                        ratingHtml += `<p class="rating overall">Overall: ${r.rating}/5</p>`;
+                    }
+                } else if (r.rating) {
+                    ratingHtml = `<p class="rating">Rating: ${r.rating}/5</p>`;
+                }
+
+                return `
+                    <div class="restaurant-card">
+                        <h3>${escapeHtml(r.name)}</h3>
+                        <p class="address">${escapeHtml(r.address)}</p>
+                        ${ratingHtml}
+                        <a href="${r.maps_url}" target="_blank" class="btn btn-small">View on Google Maps</a>
+                    </div>
+                `;
+            }).join('');
         }
 
         function showError(message) {
