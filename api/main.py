@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import random
 from datetime import datetime, timedelta
@@ -107,12 +108,30 @@ def calculate_recent_rating(reviews: list[dict]) -> tuple[float | None, int]:
     return round(sum(recent_ratings) / len(recent_ratings), 1), len(recent_ratings)
 
 
+def radius_to_bounds(lat: float, lng: float, radius_km: float) -> dict:
+    """Convert a center point and radius to a bounding box rectangle."""
+    # Earth's radius in km
+    earth_radius_km = 6371.0
+    # Calculate latitude delta (1 degree latitude ≈ 111 km)
+    delta_lat = radius_km / 111.0
+    # Calculate longitude delta (varies with latitude)
+    delta_lng = radius_km / (111.0 * math.cos(math.radians(lat)))
+
+    return {
+        "low": {"latitude": lat - delta_lat, "longitude": lng - delta_lng},
+        "high": {"latitude": lat + delta_lat, "longitude": lng + delta_lng},
+    }
+
+
 async def search_restaurants(
     cuisine: str, lat: float, lng: float, radius_meters: float
 ) -> list[Restaurant]:
     """Search for restaurants using Google Places API."""
     if not GOOGLE_API_KEY:
         return []
+
+    radius_km = radius_meters / 1000.0
+    bounds = radius_to_bounds(lat, lng, radius_km)
 
     url = "https://places.googleapis.com/v1/places:searchText"
     headers = {
@@ -121,12 +140,7 @@ async def search_restaurants(
     }
     body = {
         "textQuery": cuisine,
-        "locationRestriction": {
-            "circle": {
-                "center": {"latitude": lat, "longitude": lng},
-                "radius": radius_meters,
-            }
-        },
+        "locationRestriction": {"rectangle": bounds},
         "maxResultCount": 10,
     }
 
